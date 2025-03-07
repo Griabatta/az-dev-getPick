@@ -1,11 +1,29 @@
-import type { Config } from "@netlify/functions"
+import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
+import { NestFactory } from '@nestjs/core';
+import { ImageProxyModule } from '../../src/app.module';
+// @ts-ignore
+import serverless from 'serverless-http';
 
-export default async (req: Request) => {
-    const { next_run } = await req.json()
+let server: any;
 
-    console.log("Received event! Next invocation at:", next_run)
+async function bootstrap() {
+    if (!server) {
+        const app = await NestFactory.create(ImageProxyModule);
+        app.enableCors();
+        await app.init();
+
+        const expressApp = app.getHttpAdapter().getInstance();
+        server = serverless(expressApp);
+    }
+
+    return server;
 }
 
-export const config: Config = {
-    schedule: "@hourly"
-}
+export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+    const handler = await bootstrap();
+    const result = await handler(event, context);
+    return {
+        ...result,
+        statusCode: result.statusCode || 200
+    };
+};

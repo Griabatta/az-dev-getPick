@@ -6,13 +6,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
+    "resolveJsonModule": true,
     "sourceMap": true,
+    "rootDir": "E:/get_pick/get-pick", // Указываем корневую директорию проекта
     "outDir": "./dist",
     "baseUrl": "./",
-    "paths": {
-      "@app/*": ["src/*"]
-    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -20,5 +18,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": ["src/**/*", "ff/**/*"]
 }
